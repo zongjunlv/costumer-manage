@@ -4,6 +4,7 @@
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
+    "postinstall": "prisma generate",
     "pkg": "pkg -t node18-win-x64 server.js -o customer-manage.exe"
   },
   "dependencies": {
