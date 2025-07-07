@@ -11,7 +11,7 @@ type FollowUpWithCustomer = {
 };
 
 export default async function FollowUpsPage() {
-  const list = await prisma.followUp.findMany({
+  const list: FollowUpWithCustomer[] = await prisma.followUp.findMany({
     include: { customer: true },
     orderBy: { createdAt: 'desc' },
   });
