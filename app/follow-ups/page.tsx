@@ -31,7 +31,7 @@ export default async function FollowUpsPage() {
           </tr>
         </thead>
         <tbody>
-          {list.map((item) => (
+          {list.map((item: any) => (
             <tr key={item.id}>
               <td className="border p-2">{new Date(item.createdAt).toLocaleString()}</td>
               <td className="border p-2">{item.customer.name}</td>
