@@ -3,15 +3,17 @@ import { notFound } from 'next/navigation';
 import ExportButton from '@/app/ui/customers/export-button';
 import FollowUpItem from '@/app/ui/followups/item';
 import ContactRow from '@/app/ui/contacts/row';
+import InlineEdit from '@/app/ui/inline-edit';
+import FollowUpNewForm from '@/app/ui/followups/new-form';
 
 interface LocalPageProps<T> { params: T; searchParams?: { [key: string]: string | string[] | undefined } }
 
 export default async function CustomerDetailPage({ params }: any) {
   // 先取出联系人并去重
-  const customer = await prisma.customer.findUnique({
+  const customer = (await prisma.customer.findUnique({
     where: { id: params.id },
     include: { contacts: { orderBy: { id: 'asc' } }, followUps: { orderBy: { createdAt: 'desc' } } },
-  });
+  })) as any;
 
   if (!customer) return notFound();
 
@@ -41,34 +43,29 @@ export default async function CustomerDetailPage({ params }: any) {
         <div className="grid grid-cols-2 gap-2 text-sm">
           <span>区域：{customer.region || '-'}</span>
           <span>国家：{customer.country || '-'}</span>
-          <span>等级：{customer.level || '-'}</span>
-          <span>来源：{customer.source || '-'}</span>
-          <span>主营行业：{customer.mainIndustry || '-'}</span>
+          <span>主营：{customer.mainIndustry || '-'}</span>
+          <span>客户画像：{customer.companyFeature || '-'}</span>
           <span>需求产品：{customer.demandProducts || '-'}</span>
+          <span>网址：{customer.website || '-'}</span>
+          <span>客户等级：{customer.level || '-'}</span>
+          <span>客户来源：{customer.source || '-'}</span>
+          <span>化工分属：{customer.chemicalSegment || '-'}</span>
+          <span>客户关键词：{customer.keywords || '-'}</span>
         </div>
       </section>
 
       <section>
-        <h2 className="font-medium mb-2">联系人</h2>
-        <table className="w-full border text-center">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="p-2 border">姓名</th>
-              <th className="p-2 border">职位</th>
-              <th className="p-2 border">电话</th>
-              <th className="p-2 border">操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            {customer.contacts.map((c: any) => (
-              <ContactRow key={c.id} contact={c} />
-            ))}
-          </tbody>
-        </table>
+        <h2 className="font-medium mb-2">名片信息 <span className="text-xs text-gray-400">(双击可编辑)</span></h2>
+        <div className="bg-gray-50 p-4 rounded border text-sm whitespace-pre-wrap">
+          <InlineEdit id={customer.id} field="cardInfo" value={customer.cardInfo} textarea />
+        </div>
       </section>
 
       <section>
-        <h2 className="font-medium mb-2">跟进记录</h2>
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="font-medium">跟进记录</h2>
+          <FollowUpNewForm customerId={customer.id} />
+        </div>
         <ul className="space-y-2 text-sm">
           {customer.followUps.map((f: any) => (
             <FollowUpItem
@@ -83,6 +80,14 @@ export default async function CustomerDetailPage({ params }: any) {
           ))}
           {customer.followUps.length === 0 && <p className="text-gray-500">暂无记录</p>}
         </ul>
+      </section>
+
+      {/* 建议板块 */}
+      <section>
+        <h2 className="font-medium mb-2">建议 <span className="text-xs text-gray-400">(双击可编辑)</span></h2>
+        <div className="bg-gray-50 p-4 rounded border text-sm whitespace-pre-wrap">
+          <InlineEdit id={customer.id} field="suggestion" value={customer.suggestion} textarea />
+        </div>
       </section>
     </main>
   );

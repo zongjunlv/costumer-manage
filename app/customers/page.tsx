@@ -7,8 +7,16 @@ import ClientSearch from '@/app/ui/customers/client-search';
 
 export default async function CustomersPage({ searchParams }: any) {
   const keyword = searchParams?.keyword || '';
-  const customers: { id: string; name: string }[] = await prisma.customer.findMany({
-    where: keyword ? { name: { contains: keyword } } : undefined,
+  const customers = await prisma.customer.findMany({
+    where: keyword ? { name: { contains: keyword, mode: 'insensitive' } } : undefined,
+    select: {
+      id: true,
+      name: true,
+      region: true,
+      country: true,
+      mainIndustry: true,
+      level: true,
+    },
   });
 
   return (

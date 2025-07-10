@@ -1,0 +1,14 @@
+{
+  "buildCommand": "prisma migrate deploy && prisma generate && next build",
+  "alias": [
+    "my-customer-manage.vercel.app"
+  ],
+  "env": {
+    "DATABASE_URL": "@database_url"
+  },
+  "functions": {
+    "app/api/**/*.ts": {
+      "runtime": "nodejs18.x"
+    }
+  }
+} 

@@ -1,11 +1,16 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "/app/generated/prisma-client"
+  binaryTargets = ["native"]
+}
+
+generator client_node {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["native"]
 }
 
 model Customer {
@@ -19,31 +24,34 @@ model Customer {
   mainIndustry    String?
   relatedBusiness String?
   demandProducts  String?
-
-  contacts   Contact[]
-  followUps  FollowUp[]
-
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  website         String?
+  cardInfo        String?
+  chemicalSegment String?
+  keywords        String?
+  suggestion      String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  contacts        Contact[]
+  followUps       FollowUp[]
 }
 
 model Contact {
   id         String   @id @default(uuid())
-  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   customerId String
   name       String
   position   String?
   phone      String?
   owner      String?
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
 }
 
 model FollowUp {
   id         String   @id @default(uuid())
-  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   customerId String
   owner      String?
   progress   String
   record     String
   advice     String?
   createdAt  DateTime @default(now())
-} 
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+}

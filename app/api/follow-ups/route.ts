@@ -34,4 +34,20 @@ export async function DELETE(req: Request) {
     console.error(e);
     return NextResponse.json({ error: 'failed to delete' }, { status: 500 });
   }
+}
+
+// PUT /api/follow-ups?id=xxx  更新跟进记录
+export async function PUT(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get('id');
+  if (!id) return NextResponse.json({ error: 'missing id' }, { status: 400 });
+
+  try {
+    const data = await req.json();
+    const updated = await prisma.followUp.update({ where: { id }, data });
+    return NextResponse.json(updated);
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: 'failed to update' }, { status: 500 });
+  }
 } 

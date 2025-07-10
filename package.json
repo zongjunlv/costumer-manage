@@ -5,7 +5,13 @@
     "dev": "next dev",
     "start": "next start",
     "postinstall": "prisma generate",
-    "pkg": "pkg -t node18-win-x64 server.js -o customer-manage.exe"
+    "pkg": "pkg -t node18-win-x64 server.js -o customer-manage.exe",
+    "domain:list": "vercel alias list",
+    "domain:set": "node scripts/domain-manager.js set",
+    "domain:remove": "node scripts/domain-manager.js remove",
+    "domain:quick": "node scripts/domain-manager.js quick",
+    "deploy": "vercel --prod",
+    "deploy:preview": "vercel"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -25,13 +31,18 @@
     "tailwindcss": "3.4.17",
     "typescript": "5.7.3",
     "use-debounce": "^10.0.4",
+    "xlsx": "^0.18.5",
     "zod": "^3.25.17"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/node": "22.10.7",
     "@types/react": "19.0.7",
-    "@types/react-dom": "19.0.3"
+    "@types/react-dom": "19.0.3",
+    "ts-node": "^10.9.2"
+  },
+  "prisma": {
+    "seed": "node ./prisma/seed.js"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

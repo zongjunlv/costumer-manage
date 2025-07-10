@@ -2,7 +2,16 @@
 
 import { useRouter } from 'next/navigation';
 
-export default function CustomerList({ customers }: { customers: { id: string; name: string }[] }) {
+interface Item {
+  id: string;
+  name: string;
+  region?: string | null;
+  country?: string | null;
+  mainIndustry?: string | null;
+  level?: string | null;
+}
+
+export default function CustomerList({ customers }: { customers: Item[] }) {
   const router = useRouter();
 
   async function handleDelete(id: string) {
@@ -12,27 +21,36 @@ export default function CustomerList({ customers }: { customers: { id: string; n
   }
 
   return (
-    <ul className="mt-4 space-y-2">
-      {customers.map((c) => (
-        <li key={c.id} className="border p-3 rounded-md flex justify-between items-center">
-          <span>{c.name}</span>
-          <div className="space-x-4">
-            <button
-              onClick={() => router.push(`/customers/${c.id}`)}
-              className="text-blue-600 hover:underline text-sm"
-            >
-              查看
-            </button>
-            <button
-              onClick={() => handleDelete(c.id)}
-              className="text-red-600 hover:underline text-sm"
-            >
-              删除
-            </button>
-          </div>
-        </li>
-      ))}
-      {customers.length === 0 && <p className="text-gray-500">无匹配客户</p>}
-    </ul>
+    <div className="overflow-x-auto mt-4">
+      <table className="min-w-full border text-sm text-center">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="p-2 border">客户名称</th>
+            <th className="p-2 border">区域</th>
+            <th className="p-2 border">国家</th>
+            <th className="p-2 border">主营</th>
+            <th className="p-2 border">客户等级</th>
+            <th className="p-2 border">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {customers.map((c) => (
+            <tr key={c.id}>
+              <td className="border p-2">{c.name}</td>
+              <td className="border p-2">{c.region || '-'}</td>
+              <td className="border p-2">{c.country || '-'}</td>
+              <td className="border p-2">{c.mainIndustry || '-'}</td>
+              <td className="border p-2">{c.level || '-'}</td>
+              <td className="border p-2 space-x-2">
+                <button onClick={() => router.push(`/customers/${c.id}`)} className="text-blue-600 hover:underline">查看</button>
+                <button onClick={() => router.push(`/customers/${c.id}/edit`)} className="text-green-600 hover:underline">编辑</button>
+                <button onClick={() => handleDelete(c.id)} className="text-red-600 hover:underline">删除</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {customers.length === 0 && <p className="text-gray-500 mt-2">无匹配客户</p>}
+    </div>
   );
 } 

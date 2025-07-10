@@ -51,7 +51,7 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const keyword = searchParams.get('keyword') || '';
   const data = await prisma.customer.findMany({
-    where: keyword ? { name: { contains: keyword } } : undefined,
+    where: keyword ? { name: { contains: keyword, mode: 'insensitive' } } : undefined,
     include: { contacts: true, followUps: true },
   });
   return NextResponse.json(data);
@@ -72,5 +72,30 @@ export async function DELETE(req: Request) {
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: 'failed to delete' }, { status: 500 });
+  }
+}
+
+// PUT /api/customers?id=xxx  更新客户信息
+export async function PUT(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get('id');
+  if (!id) {
+    return NextResponse.json({ error: 'missing id' }, { status: 400 });
+  }
+  try {
+    const data = await req.json();
+    // 拆分嵌套字段
+    const { contacts = [], followUps = [], ...customer } = data;
+
+    const updated = await prisma.customer.update({
+      where: { id },
+      data: {
+        ...customer,
+      },
+    });
+    return NextResponse.json(updated);
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: 'failed to update' }, { status: 500 });
   }
 } 
