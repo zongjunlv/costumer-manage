@@ -1,10 +1,4 @@
 generator client {
-  provider      = "prisma-client-js"
-  output        = "/app/generated/prisma-client"
-  binaryTargets = ["native"]
-}
-
-generator client_node {
   provider = "prisma-client-js"
 }
 
